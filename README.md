@@ -38,6 +38,10 @@ or
 $ yarn install
 ```
 
+## Configuration & Dependancies 
+- Install MySql (version 8.1 was used)
+- Rename .env.example to .env
+
 ## Running the app
 
 ```bash
