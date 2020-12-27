@@ -3,6 +3,7 @@ import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
+import { Role } from '../auth/roles';
 
 @Injectable()
 export class UsersService {
@@ -21,6 +22,7 @@ export class UsersService {
     return this.usersRepository.save({
       ...user,
       password: await this.encryptPassword(password),
+      roles: [Role.User],
     });
   }
 
@@ -52,7 +54,7 @@ export class UsersService {
     return bcrypt.hash(password, 12);
   }
 
-  async verifyPassword(rawPassword, encryptedPassword) {
+  async verifyPassword(rawPassword: any, encryptedPassword: string) {
     return bcrypt.compare(rawPassword, encryptedPassword);
   }
 }

@@ -13,7 +13,9 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Role, Roles } from '../auth/roles';
 import { User } from './user.entity';
 import { UsersService } from './users.service';
 
@@ -29,6 +31,8 @@ export class UsersController {
     @Body()
     user: User,
   ): Promise<User> {
+    this.logger.debug(`Creating user, email: ${user.email}`);
+
     return this.usersService.create(user);
   }
 
@@ -51,8 +55,11 @@ export class UsersController {
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
-  remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
+  @Roles(Role.Admin)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    this.logger.log(`Deleting user id ${id}`);
+
     return this.usersService.remove(id);
   }
 }
