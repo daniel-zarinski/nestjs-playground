@@ -4,9 +4,11 @@ import {
   IsEmail,
   IsOptional,
   IsString,
+  IsEnum,
   MinLength,
 } from 'class-validator';
 import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from 'typeorm';
+import { Role } from '../auth/roles';
 
 @Entity()
 export class User extends BaseEntity {
@@ -35,6 +37,11 @@ export class User extends BaseEntity {
   @IsBoolean()
   @IsOptional()
   isActive: boolean;
+
+  @Column('simple-array')
+  @IsEnum(Role)
+  @IsOptional()
+  roles: Role[];
 
   @Expose()
   get fullName(): string {
